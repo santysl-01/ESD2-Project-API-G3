@@ -6,8 +6,8 @@ mod config;
 mod repository;
 
 //cambiar por los controllers que tengas
-use controller::Vehiculo_controller::pais_router;
-
+use controller::pais_controller::pais_router;
+use controller::persona_controller::persona_router;
 
 use config::config::crear_pool;
 
