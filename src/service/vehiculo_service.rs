@@ -1,13 +1,9 @@
-use axum::{
-    extract::{Path,State},
-    Json
-};
+use axum::{extract::{Path, State}, Json};
 use sqlx::PgPool;
-use crate::models::vehiculo::Vehiculo;
- use crate::repository::vehiculo_vehiculo::VehiculoRepository;
+use crate::models::vehiculo::{Vehiculo, NuevoVehiculo, ActualizarVehiculo};
+use crate::repository::vehiculo_repository::VehiculoRepository;
 
-
- // 1. Obtener todos los vehículos
+// 1. Obtener todos los vehículos
 pub async fn obtener_vehiculos(State(pool): State<PgPool>) -> Json<Vec<Vehiculo>> {
     let repo = VehiculoRepository::new(pool);
     match repo.obtener_vehiculos().await {
