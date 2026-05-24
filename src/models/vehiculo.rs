@@ -16,8 +16,7 @@ pub struct NuevoVehiculo {
     pub id_propietario: i32,
 }
 
-// 3. Estructura para actualizar (Generalmente igual a NuevoVehiculo, 
-// o con campos Opcionales si permites actualizaciones parciales)
+
 #[derive(Debug,Clone, Serialize, Deserialize)]
 pub struct ActualizarVehiculo {
     pub placa: String,

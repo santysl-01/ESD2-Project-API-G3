@@ -11,7 +11,7 @@ impl VehiculoRepository{
         Self{pool}
     }
 
-    // 1. Obtener todos los vehículos
+   
     pub async fn obtener_vehiculos(&self) -> sqlx::Result<Vec<Vehiculo>> {
         let filas = sqlx::query("SELECT id_vehiculo, placa, marca, id_propietario FROM vehiculo")
             .fetch_all(&self.pool)
@@ -29,7 +29,7 @@ impl VehiculoRepository{
         Ok(vehiculos)
     }
 
-    // 2. Crear un nuevo vehículo
+    
     pub async fn crear_vehiculo(&self, nuevo_vehiculo: NuevoVehiculo) -> sqlx::Result<Vehiculo> {
         let fila = sqlx::query(
             "INSERT INTO vehiculo (placa, marca, id_propietario) VALUES ($1, $2, $3) RETURNING id_vehiculo, placa, marca, id_propietario"
@@ -48,7 +48,7 @@ impl VehiculoRepository{
         })
     }
 
-    // 3. Actualizar un vehículo existente
+
     pub async fn actualizar_vehiculo(&self, id: i32, vehiculo_actualizado: ActualizarVehiculo) -> sqlx::Result<Vehiculo> {
         let fila = sqlx::query(
             "UPDATE vehiculo SET placa = $1, marca = $2, id_propietario = $3 WHERE id_vehiculo = $4 RETURNING id_vehiculo, placa, marca, id_propietario"
@@ -68,7 +68,7 @@ impl VehiculoRepository{
         })
     }
 
-    // 4. Eliminar un vehículo
+  
     pub async fn eliminar_vehiculo(&self, id: i32) -> sqlx::Result<()> {
         sqlx::query("DELETE FROM vehiculo WHERE id_vehiculo = $1")
             .bind(id)

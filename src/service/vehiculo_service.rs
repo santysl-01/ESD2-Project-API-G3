@@ -3,20 +3,18 @@ use sqlx::PgPool;
 use crate::models::vehiculo::{Vehiculo, NuevoVehiculo, ActualizarVehiculo};
 use crate::repository::vehiculo_repository::VehiculoRepository;
 
-// 1. Obtener todos los vehículos
+
 pub async fn obtener_vehiculos(State(pool): State<PgPool>) -> Json<Vec<Vehiculo>> {
     let repo = VehiculoRepository::new(pool);
     match repo.obtener_vehiculos().await {
         Ok(vehiculos) => Json(vehiculos),
         Err(_) => Json(vec![]),
     }
-}
+} 
 
-// 2. Crear un vehículo
-pub async fn crear_vehiculo(
-    State(pool): State<PgPool>,
-    Json(nuevo_vehiculo): Json<NuevoVehiculo>,
-) -> Json<Vehiculo> {
+
+pub async fn crear_vehiculo(State(pool): State<PgPool>,
+    Json(nuevo_vehiculo): Json<NuevoVehiculo>,) -> Json<Vehiculo> {
     let repo = VehiculoRepository::new(pool);
     match repo.crear_vehiculo(nuevo_vehiculo).await {
         Ok(vehiculo) => Json(vehiculo),
@@ -29,7 +27,7 @@ pub async fn crear_vehiculo(
     }
 }
 
-// 3. Eliminar vehículo pasando el ID por el Body (JSON)
+
 pub async fn eliminar_vehiculo(
     State(pool): State<PgPool>, 
     Json(id_vehiculo): Json<i32>
@@ -41,7 +39,7 @@ pub async fn eliminar_vehiculo(
     }
 }
 
-// 4. Eliminar vehículo pasando el ID por la URL (Path)
+
 pub async fn eliminar_vehiculo_por_id(
     State(pool): State<PgPool>,
     Path(id_vehiculo): Path<i32>,
@@ -50,5 +48,21 @@ pub async fn eliminar_vehiculo_por_id(
     match repo.eliminar_vehiculo(id_vehiculo).await {
         Ok(_) => Json(true),
         Err(_) => Json(false),
+    }
+}
+    pub async fn actualizar_vehiculo(
+    State(pool): State<PgPool>,
+    Path(id_vehiculo): Path<i32>,
+    Json(vehiculo_actualizado): Json<ActualizarVehiculo>,
+) -> Json<Vehiculo> {
+    let repo = VehiculoRepository::new(pool);
+    match repo.actualizar_vehiculo(id_vehiculo, vehiculo_actualizado).await {
+        Ok(vehiculo) => Json(vehiculo),
+        Err(_) => Json(Vehiculo {
+            id_vehiculo: 0,
+            placa: "Error al actualizar el vehículo".to_string(),
+            marca: String::new(),
+            id_propietario: 0,
+        }),
     }
 }
