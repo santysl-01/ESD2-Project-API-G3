@@ -6,7 +6,7 @@ use serde::Serialize;
 pub struct Servicio {
     pub id_servicio: i32,
     pub descripcion_falla: String,
-    pub precio_estimado: Option<f64>,
+    pub precio_estimado: f64,
 }
 
 pub fn servicios_router(pool: PgPool) -> Router {
@@ -19,15 +19,19 @@ async fn listar_servicios(
     State(pool): State<PgPool>,
 ) -> Json<Vec<Servicio>> {
 
-    let servicios = sqlx::query_as::<_, Servicio>(
-        r#"
-        SELECT id_servicio, descripcion_falla, precio_estimado
-        FROM servicios
-        "#
-    )
-    .fetch_all(&pool)
-    .await
-    .unwrap_or_default();
 
+
+let servicios = sqlx::query_as::<_, Servicio>(
+    r#"
+    SELECT 
+        id_servicio,
+        descripcion_falla,
+        precio_estimado::float8
+    FROM servicios
+    "#
+)
+.fetch_all(&pool)
+.await
+.unwrap();
     Json(servicios)
 }

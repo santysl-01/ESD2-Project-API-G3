@@ -14,6 +14,7 @@ use config::config::crear_pool;
 
 #[tokio::main]
 async fn main() {
+println!("DATABASE_URL = {:?}", std::env::var("DATABASE_URL"));
     let direccion = "127.0.0.1:3000";
     let listener = tokio::net::TcpListener::bind(direccion)
         .await
