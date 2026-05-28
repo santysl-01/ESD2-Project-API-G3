@@ -19,19 +19,21 @@ async fn listar_servicios(
     State(pool): State<PgPool>,
 ) -> Json<Vec<Servicio>> {
 
+    let servicios = match sqlx::query_as::<_, Servicio>(
+        r#"
+        SELECT
+            id_servicio,
+            descripcion_falla,
+            precio_estimado::float8
+        FROM servicios
+        "#
+    )
+    .fetch_all(&pool)
+    .await
+    {
+        Ok(data) => data,
+        Err(_) => vec![],
+    };
 
-
-let servicios = sqlx::query_as::<_, Servicio>(
-    r#"
-    SELECT 
-        id_servicio,
-        descripcion_falla,
-        precio_estimado::float8
-    FROM servicios
-    "#
-)
-.fetch_all(&pool)
-.await
-.unwrap();
     Json(servicios)
 }
