@@ -1,39 +1,21 @@
-use axum::{Router, routing::get, extract::State, Json};
+use axum::{
+    routing::{get, post, put, delete},
+    Router,
+};
 use sqlx::PgPool;
-use serde::Serialize;
 
-#[derive(Serialize, sqlx::FromRow)]
-pub struct Servicio {
-    pub id_servicio: i32,
-    pub descripcion_falla: String,
-    pub precio_estimado: f64,
-}
+use crate::service::servicio_service::{
+    obtener_servicios,
+    crear_servicio,
+    actualizar_servicio,
+    eliminar_servicio_por_id,
+};
 
 pub fn servicios_router(pool: PgPool) -> Router {
     Router::new()
-        .route("/servicios", get(listar_servicios))
+        .route("/api/servicios", get(obtener_servicios))
+        .route("/api/servicios", post(crear_servicio))
+        .route("/api/servicios", put(actualizar_servicio))
+        .route("/api/servicios/{id}", delete(eliminar_servicio_por_id))
         .with_state(pool)
-}
-
-async fn listar_servicios(
-    State(pool): State<PgPool>,
-) -> Json<Vec<Servicio>> {
-
-    let servicios = match sqlx::query_as::<_, Servicio>(
-        r#"
-        SELECT
-            id_servicio,
-            descripcion_falla,
-            precio_estimado::float8
-        FROM servicios
-        "#
-    )
-    .fetch_all(&pool)
-    .await
-    {
-        Ok(data) => data,
-        Err(_) => vec![],
-    };
-
-    Json(servicios)
 }
