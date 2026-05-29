@@ -18,4 +18,4 @@ pub fn propietario_router(pool: PgPool) -> Router {
         .route("/api/propietarios", put(actualizar_propietario))
         .route("/api/propietarios/{id}", delete(eliminar_propietario_por_id))
         .with_state(pool)
-}SS
+}
