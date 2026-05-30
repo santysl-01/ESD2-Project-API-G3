@@ -11,8 +11,8 @@ use dotenvy::dotenv;
 use controller::vehiculo_controller::vehiculo_router;
 use controller::reparaciones_controller::reparacion_router;
 use controller::servicios_controller::servicios_router;
-use controller::propietario_controller::propietario_router  ;
-
+use controller::propietario_controller::propietario_router;
+use controller::mecanico_controller::mecanico_router;
 use config::config::crear_pool;
 
 #[tokio::main]
@@ -42,6 +42,7 @@ fn unificar_routers(pool: sqlx::PgPool) -> axum::Router {
         .merge(vehiculo_router(pool.clone()))
         .merge(reparacion_router(pool.clone()))
         .merge(propietario_router(pool.clone()))
+        .merge(mecanico_router(pool.clone()))
         .merge(servicios_router(pool))
         
 }
