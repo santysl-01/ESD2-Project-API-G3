@@ -44,15 +44,17 @@ impl ServicioRepository {
         .bind(actualizacion.descripcion_falla)
         .bind(actualizacion.precio_estimado)
         .bind(actualizacion.id_servicio)
+         .persistent(false)
         .fetch_one(&self.pool)
         .await?;
 
         Ok(servicio)
     }
 
-    pub async fn eliminar_servicio(&self, id: i32) -> Result<(), sqlx::Error> {
+    pub async fn eliminar_servicio(&self, id: i32) -> sqlx::Result<()> {
         sqlx::query("DELETE FROM servicios WHERE id_servicio = $1")
             .bind(id)
+            .persistent(false)
             .execute(&self.pool)
             .await?;
 

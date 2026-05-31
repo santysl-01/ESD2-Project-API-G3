@@ -30,6 +30,7 @@ impl ReparacionRepository {
         .bind(nueva_reparacion.id_vehiculo)
         .bind(nueva_reparacion.id_servicio)
         .bind(nueva_reparacion.estado)
+        .persistent(false)
         .fetch_one(&self.pool)
         .await?;
         Ok(reparacion)
@@ -50,20 +51,22 @@ impl ReparacionRepository {
 
     pub async fn obtener_reparacion_detalle(&self, id_reparacion: i32) -> Result<ReparacionDetalle, sqlx::Error> {
         let reparacion_detalle = sqlx::query_as::<_, ReparacionDetalle>(
-            "SELECT 
-                r.id_reparacion, 
-                v.modelo AS modelo_vehiculo, 
-                m.nombre AS nombre_mecanico, 
-                s.descripcion_falla,                
-                r.fecha_entrada::TEXT,              
-                s.precio_estimado::FLOAT8 AS precio_estimado 
-             FROM reparaciones r
-             JOIN vehiculos v ON r.id_vehiculo = v.id_vehiculo
-             JOIN mecanicos m ON r.id_mecanico = m.id_mecanico
-             JOIN servicios s ON r.id_servicio = s.id_servicio
-             WHERE r.id_reparacion = $1"
+        "SELECT
+    r.id_reparacion,
+    v.marca AS modelo_vehiculo,
+    m.nombre AS nombre_mecanico,
+    s.descripcion_falla,
+    r.fecha_entrada::TEXT,
+    r.estado,
+    s.precio_estimado::FLOAT8 AS precio_estimado
+FROM reparaciones r
+JOIN vehiculos v ON r.id_vehiculo = v.id_vehiculo
+JOIN mecanicos m ON r.id_mecanico = m.id_mecanico
+JOIN servicios s ON r.id_servicio = s.id_servicio
+WHERE r.id_reparacion = $1"
         )
         .bind(id_reparacion)
+         .persistent(false)
         .fetch_one(&self.pool)
         .await?;
         Ok(reparacion_detalle)

@@ -15,7 +15,7 @@ pub fn servicios_router(pool: PgPool) -> Router {
     Router::new()
         .route("/api/servicios", get(obtener_servicios))
         .route("/api/servicios", post(crear_servicio))
-        .route("/api/servicios", put(actualizar_servicio))
+        .route("/api/servicios/{id}", put(actualizar_servicio))
         .route("/api/servicios/{id}", delete(eliminar_servicio_por_id))
         .with_state(pool)
 }

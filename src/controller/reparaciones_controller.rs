@@ -15,7 +15,7 @@ pub fn reparacion_router(pool: PgPool) -> Router {
     Router::new()
         .route("/api/reparaciones", get(obtener_reparaciones))
         .route("/api/reparaciones", post(crear_reparacion))
-        .route("/api/reparaciones", put(actualizar_reparacion))
+        .route("/api/reparaciones/{id}", put(actualizar_reparacion))
         .route("/api/reparaciones/{id}/detalle", get(obtener_reparacion_detalle))
         .with_state(pool)
 }

@@ -14,7 +14,9 @@ impl PropietarioRepository {
         let propietarios = sqlx::query_as::<_, Propietario>(
             "SELECT id_propietario, nombre, dui, telefono FROM propietarios"
         )
+        
         .fetch_all(&self.pool)
+        
         .await?;
         Ok(propietarios)
     }
@@ -28,6 +30,7 @@ impl PropietarioRepository {
         .bind(nuevo.nombre)
         .bind(nuevo.dui)
         .bind(nuevo.telefono)
+        .persistent(false)
         .fetch_one(&self.pool)
         .await?;
         Ok(propietario)
@@ -43,6 +46,7 @@ impl PropietarioRepository {
         .bind(actualizacion.dui)
         .bind(actualizacion.telefono)
         .bind(actualizacion.id_propietario)
+        .persistent(false)    
         .fetch_one(&self.pool)
         .await?;
         Ok(propietario)

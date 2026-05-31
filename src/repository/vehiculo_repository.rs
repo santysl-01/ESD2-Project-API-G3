@@ -13,7 +13,7 @@ impl VehiculoRepository{
 
    
     pub async fn obtener_vehiculos(&self) -> sqlx::Result<Vec<Vehiculo>> {
-        let filas = sqlx::query("SELECT id_vehiculo, placa, marca, id_propietario FROM vehiculo")
+        let filas = sqlx::query("SELECT id_vehiculo, placa, marca, id_propietario FROM vehiculos")
             .fetch_all(&self.pool)
             .await?;
 
@@ -32,7 +32,7 @@ impl VehiculoRepository{
     
     pub async fn crear_vehiculo(&self, nuevo_vehiculo: NuevoVehiculo) -> sqlx::Result<Vehiculo> {
         let fila = sqlx::query(
-            "INSERT INTO vehiculo (placa, marca, id_propietario) VALUES ($1, $2, $3) RETURNING id_vehiculo, placa, marca, id_propietario"
+            "INSERT INTO vehiculos (placa, marca, id_propietario) VALUES ($1, $2, $3) RETURNING id_vehiculo, placa, marca, id_propietario"
         )
         .bind(nuevo_vehiculo.placa)
         .bind(nuevo_vehiculo.marca)
@@ -51,7 +51,7 @@ impl VehiculoRepository{
 
     pub async fn actualizar_vehiculo(&self, id: i32, vehiculo_actualizado: ActualizarVehiculo) -> sqlx::Result<Vehiculo> {
         let fila = sqlx::query(
-            "UPDATE vehiculo SET placa = $1, marca = $2, id_propietario = $3 WHERE id_vehiculo = $4 RETURNING id_vehiculo, placa, marca, id_propietario"
+            "UPDATE vehiculos SET placa = $1, marca = $2, id_propietario = $3 WHERE id_vehiculo = $4 RETURNING id_vehiculo, placa, marca, id_propietario"
         )
         .bind(vehiculo_actualizado.placa)
         .bind(vehiculo_actualizado.marca)
@@ -70,7 +70,7 @@ impl VehiculoRepository{
 
   
     pub async fn eliminar_vehiculo(&self, id: i32) -> sqlx::Result<()> {
-        sqlx::query("DELETE FROM vehiculo WHERE id_vehiculo = $1")
+        sqlx::query("DELETE FROM vehiculos WHERE id_vehiculo = $1")
             .bind(id)
             .execute(&self.pool)
             .await?;

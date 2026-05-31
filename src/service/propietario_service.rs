@@ -2,7 +2,7 @@ use axum::{extract::{Path, State}, Json};
 use sqlx::PgPool;
 use crate::models::propietario::{Propietario, NuevoPropietario, ActualizarPropietario};
 use crate::repository::propietario_repository::PropietarioRepository;
-
+use axum::http::StatusCode; 
 pub async fn obtener_propietarios(State(pool): State<PgPool>) -> Json<Vec<Propietario>> {
     let repo = PropietarioRepository::new(pool);
     match repo.obtener_propietarios().await {
@@ -14,16 +14,14 @@ pub async fn obtener_propietarios(State(pool): State<PgPool>) -> Json<Vec<Propie
 pub async fn crear_propietario(
     State(pool): State<PgPool>,
     Json(nuevo): Json<NuevoPropietario>,
-) -> Json<Propietario> {
+) -> Result<Json<Propietario>, StatusCode> {  // <- cambiar tipo de retorno
     let repo = PropietarioRepository::new(pool);
     match repo.crear_propietario(nuevo).await {
-        Ok(propietario) => Json(propietario),
-        Err(_) => Json(Propietario {
-            id_propietario: 0,
-            nombre: String::new(),
-            dui: None,
-            telefono: None,
-        }),
+        Ok(propietario) => Ok(Json(propietario)),  // <- wrappear en Ok()
+       Err(e) => {
+    eprintln!("ERROR DB: {:?}", e);  // <- debe estar así
+    Err(StatusCode::INTERNAL_SERVER_ERROR)
+}
     }
 }
 

@@ -1,7 +1,8 @@
 use axum::{extract::{Path, State}, Json};
-use sqlx::PgPool;
+use sqlx::{PgPool, Pool, Postgres};
 use crate::models::vehiculo::{Vehiculo, NuevoVehiculo, ActualizarVehiculo};
 use crate::repository::vehiculo_repository::VehiculoRepository;
+use axum::http::StatusCode;
 
 
 pub async fn obtener_vehiculos(State(pool): State<PgPool>) -> Json<Vec<Vehiculo>> {
@@ -13,17 +14,18 @@ pub async fn obtener_vehiculos(State(pool): State<PgPool>) -> Json<Vec<Vehiculo>
 } 
 
 
-pub async fn crear_vehiculo(State(pool): State<PgPool>,
-    Json(nuevo_vehiculo): Json<NuevoVehiculo>,) -> Json<Vehiculo> {
+pub async fn crear_vehiculo(
+    State(pool): State<Pool<Postgres>>,
+    Json(nuevo_vehiculo): Json<NuevoVehiculo>,
+) -> Result<Json<Vehiculo>, (StatusCode, String)> {
     let repo = VehiculoRepository::new(pool);
+
     match repo.crear_vehiculo(nuevo_vehiculo).await {
-        Ok(vehiculo) => Json(vehiculo),
-        Err(_) => Json(Vehiculo {
-            id_vehiculo: 0,
-            placa: "Error al crear el vehículo".to_string(),
-            marca: String::new(),
-            id_propietario: 0,
-        }),
+        Ok(vehiculo) => Ok(Json(vehiculo)),
+        Err(e) => {
+            eprintln!("Error al crear vehículo: {:?}", e);
+            Err((StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))
+        }
     }
 }
 

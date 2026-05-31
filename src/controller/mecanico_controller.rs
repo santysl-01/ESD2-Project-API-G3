@@ -15,7 +15,7 @@ pub fn mecanico_router(pool: PgPool) -> Router {
     Router::new()
         .route("/api/mecanicos", get(obtener_mecanicos))
         .route("/api/mecanicos", post(crear_mecanico))
-        .route("/api/mecanicos", put(actualizar_mecanico))
+        .route("/api/mecanicos/{id}", put(actualizar_mecanico))
         .route("/api/mecanicos/{id}", delete(eliminar_mecanico_por_id))
         .with_state(pool)
 }

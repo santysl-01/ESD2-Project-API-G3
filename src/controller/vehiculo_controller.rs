@@ -9,10 +9,10 @@ use crate::service::vehiculo_service::{
 
 pub fn vehiculo_router(pool:PgPool) -> Router {
 Router ::new() 
-.route("/vehiculo", get(obtener_vehiculos))
-.route("/vehiculo", post(crear_vehiculo))
-.route("/vehiculo", delete(eliminar_vehiculo))
-.route("/vehiculo/{id}", delete(eliminar_vehiculo_por_id))
-.route("/vehiculo", put(actualizar_vehiculo))
+.route("/api/vehiculos", get(obtener_vehiculos))
+.route("/api/vehiculos", post(crear_vehiculo))
+.route("/api/vehiculos", delete(eliminar_vehiculo))
+.route("/api/vehiculos/{id}", delete(eliminar_vehiculo_por_id))
+.route("/api/vehiculos/{id}", put(actualizar_vehiculo))
 .with_state(pool)
 }

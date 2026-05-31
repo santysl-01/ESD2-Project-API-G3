@@ -28,7 +28,7 @@ pub struct ActualizarReparacion {
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct ReparacionDetalle{
     pub id_reparacion: i32,
-    pub modelo_vehiculo: String,
+    pub modelo_vehiculo: Option<String>,
     pub nombre_mecanico: String,
     pub descripcion_falla: String,
     pub fecha_entrada: String,
